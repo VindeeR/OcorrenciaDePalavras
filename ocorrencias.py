@@ -19,7 +19,7 @@
 
 file = open('nomes.txt')
 
-c = {}
+occourrence = {}
 Key = []
 Label= []
 text = ''''''
@@ -39,11 +39,11 @@ rejectWord = ['de','e','a','do','para','da','o','ao','é','que','quem','como','o
 
 for word in file.read().split():
     if not(word in rejectWord):
-       if not(word in c):
+       if not(word in occourrence):
            c.update({word:1})
            text += " " + word
        else:
-           c[word] += 1
+           occourrence[word] += 1
            text += " " + word
 
 ###########################################################
@@ -56,9 +56,8 @@ file.close()
 ##########sort the word least commom most commom##########
 ##########################################################
 
-for item in sorted(c, key = c.get):
-    #print (" " + item + " : " , c[item])#print the word and it respective number of occourrence
-    Key.append(c[item])
+for item in sorted(occourrence, key = occourrence.get):
+    Key.append(occourrence[item])
     Label.append(item)
 
 ##########################################################
