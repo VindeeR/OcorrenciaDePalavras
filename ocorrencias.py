@@ -27,7 +27,7 @@ import pdfminer                                                         #######
 ############################################################
 ##################### Open a .pdf file #####################
 ############################################################
-file = open('ALVARO DIAS.pdf', 'rb')
+file = open('file.pdf', 'rb')
 parser = PDFParser(file)
 document = PDFDocument(parser)
 
@@ -101,7 +101,7 @@ def parse_obj(lt_objs, textX , verify_old):
 #### Create the word cloud with all words that appeared ####
 ############################################################
 
-    if(verify == 15):
+    if(verify == 15): #the number must be the number of pages
         wordcloud = WordCloud(relative_scaling = 1,
                                   stopwords = set(STOPWORDS)).generate(text)
 
@@ -110,9 +110,7 @@ def parse_obj(lt_objs, textX , verify_old):
 ##########################################################
 
         plt.imshow(wordcloud)
-
         plt.axis("off")
-
         plt.show()
 
 ###########################################################
