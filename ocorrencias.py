@@ -162,10 +162,6 @@ plt.subplot(133)
 plt.bar(Key, Label, label='ocrorrencia de cada palavra')
 plt.grid(True)
 
-############################################################
-#### Create the graphics going from -2 to 27 in a scale ####
-############################################################
-
 plt.title("Palavras mais comuns nas proposas de governo dos presidentes") #title
 
 plt.show()
