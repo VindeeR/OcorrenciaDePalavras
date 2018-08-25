@@ -58,19 +58,17 @@ occurrency = {}
 Key = []
 Label= []
 verify = 0
-text = ''''''
 
-def parse_obj(lt_objs, textX , verify_old):
-
+def parse_obj(lt_objs, verify_old):
+    
+    text = ''''''
     verify = verify_old
-    text = textX
 
 ###########################################################
 ############ The words that should be rejected ############
 ###########################################################
 
-    rejectWord = ['de','e','a','do','para','da','o','ao','é','que','quem','como','onde','com','um','na','em','das','uma','ser','no','nó','dos','as','se','os','ou','sua','suas','seu','seus','não','pelo','pelos','assim','será','cujo','cuja','cujos','cujas','seja','meio','essa','esta','esse','este','hoje','por','enfim','maior','noutra','deste','à','deve','através','vamos','todas','modo','poder','nos','sem','são','entre','pela','nas','tem','bem','vai','nada','menor','alto','foi','pode','mal','mau','bem','bom','ano','em','dada','vez','mesma','mesmo','aos','que','iremos','mais',
-                  'DE','E','A','DO','PARA','DA','O','AO','É','QUE','QUEM','COMO','ONDE','COM','UM','NA','EM','DAS','UMA','SER','NO','NÓ','DOS','AS','SE','OS','OU','SUA','SUAS','SEU','SEUS','NÂO','PELO','PELOS','ASSIM','SERÁ','CUJO','CUJA','CUJOS','CUJAS','SEJA','MEIO','ESSA','ESTA','ESSE','ESTE','HOJE','POR','ENFIM','MAIOR','NOUTRA','DESTE','À','DEVE','ATRAVÉS','VAMOS','TODAS','MODO','PODER','NOS','SEM','SÃO','ENTRE','PELA','NAS','TEM','BEM','VAI','NADA','MENOR','ALTO','FOI','PODE','MAL','MAU','BEM','BOM','ANO','EM','DADA','VEZ','MESMA','MESMO','AOS','QUE','IREMOS','MAIS',
+    rejectWord = ['de','da','do','o','ao','é','e','a','para','que','quem','como','onde','com','um','na','em','das','uma','ser','no','nó','dos','as','se','os','ou','sua','suas','seu','seus','não','pelo','pelos','assim','será','cujo','cuja','cujos','cujas','seja','meio','essa','esta','esse','este','por','enfim','deste','à','deve','através','nos','sem','são','nas','tem','foi','vez','mesma','mesmo','novo','contra','completa','modo','sempre','todas','novas','programa','zero','cofres','➢','seja,','aos','nossa','menos','mais','pela','maior','que,','forma','anos','milhões','às','disso,','fim','bem','diz','mas','tocante','assim,','estão','ano','nosso','sendo','leitos','apenas','•','n','sobre','serão','longo','outros','nossos','dar','voltar','i.','ii.','iii.','partir','cada','pelas','instituições','lógica','ainda','uso','isso,','conjunto','formas','processos','parte','iv.','luta','preciso','grupos','papel','espaços','pode','todo','inclusive','têm','período','devem','movimento','necessidades','demais','estrutura','anos,','2016,','todos','entre','quando','foram','precisa','terá','2017.','maiores','novos','duas','mão','externa','mil','ter','está','bilhões','estar','caminho','termos','buscar','número','números','total','vai','visando','sejam','também','ainda,',
                   ')','(','–','-','.',',',':','?','!','@','#','$','%','¨','&','*',';',',','/','|','¹','²','³','£','¢',
                   '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20']
     
@@ -86,22 +84,25 @@ def parse_obj(lt_objs, textX , verify_old):
         
         if isinstance(obj, pdfminer.layout.LTTextBoxHorizontal):
             for word in obj.get_text().split():
-                if not(word in rejectWord):
+                #if word.lower() == 'saúde,' or word.lower() == 'campo,':
+                    #word = word[0:len(word)-1].lower()
+                if not(word.lower() in rejectWord):
                     if not(word in occurrency):
-                        occurrency.update({word:1})
-                        text += " " + word
+                        occurrency.update({word.lower():1})
+                        text += " " + word.lower()
                     else:
                         occurrency[word] += 1
-                        text += " " + word
+                        text += " " + word.lower()
+            
 
         elif isinstance(obj, pdfminer.layout.LTFigure):
-            parse_obj(obj._objs, text, verify)
+            parse_obj(obj._objs, verify)
 
 ############################################################
 #### Create the word cloud with all words that appeared ####
 ############################################################
 
-    if(verify == 15): #the number must be the number of pages
+    if(verify == 15): #the number must be the number of the page to be analyzed
         wordcloud = WordCloud(relative_scaling = 1,
                                   stopwords = set(STOPWORDS)).generate(text)
 
@@ -131,7 +132,7 @@ for page in PDFPage.create_pages(document):
 ###########################################################
 
     verify += 1
-    parse_obj(layout._objs, text, verify)
+    parse_obj(layout._objs, verify)
 
 ############################################################
 ###### Sort the word least commom to the most commom #######
@@ -144,9 +145,11 @@ for item in sorted(occurrency, key = occurrency.get):
 ##########################################################
 ############# Use the 25th most commom words #############
 ##########################################################
-    
-Key = Key[len(Key)-25:len(Key)]
-Label = Label[len(Label)-25:len(Label)]
+
+Key = Key[len(Key)-30:len(Key)]
+#print(Key)
+Label = Label[len(Label)-30:len(Label)]
+#print(Label)
 
 ##########################################################
 ##### Plot the first image where we see two graphics #####
@@ -154,14 +157,9 @@ Label = Label[len(Label)-25:len(Label)]
 
 plt.figure(1, figsize=(10, 5))
 
-plt.subplot(131)
 plt.plot(Key, Label, 'ro', label='ocrorrencia de cada palavra')
 plt.grid(True)
 
-plt.subplot(133)
-plt.bar(Key, Label, label='ocrorrencia de cada palavra')
-plt.grid(True)
-
-plt.title("Palavras mais comuns nas proposas de governo dos presidentes") #title
+plt.title("")
 
 plt.show()
